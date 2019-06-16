@@ -5,4 +5,4 @@ authors = ["keiSunagawa <kei.sunagawa@mvrck.co.jp>"]
 edition = "2018"
 
 [dependencies]
-i-face = { git = "https://github.com/keiSunagawa/i-face", branch = "master" }
+i-face = { git = "https://github.com/keiSunagawa/i-face", branch = "v0.1.0" }

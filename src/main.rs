@@ -11,12 +11,18 @@ fn main() {
 }
 
 fn run() -> Result<(), Box<Error>> {
-    let child = Command::new("java")
-        .arg("-jar")
-        .arg("simqlToCsv-assembly-0.1.0-SNAPSHOT.jar")
-        .stdin(Stdio::piped())
-        .spawn()?;
-
+    let child = if !is_dev() {
+        Command::new("java")
+            .arg("-jar")
+            .arg("simqlToCsv-assembly-0.1.0-SNAPSHOT.jar")
+            .stdin(Stdio::piped())
+            .spawn()?
+    } else {
+        Command::new("bash")
+            .arg("dev.sh")
+            .stdin(Stdio::piped())
+            .spawn()?
+    };
     let mut p = Proc::new(child);
     let mut f = Front::new();
     let mut c = |s: String| -> () {
@@ -27,4 +33,12 @@ fn run() -> Result<(), Box<Error>> {
     thread::sleep(Duration::from_secs(1));
     p.kill()?;
     Ok(())
+}
+
+fn is_dev() -> bool {
+    let appdir = env::args()
+        .collect::<Vec<String>>()
+        .pop()
+        .expect("can't get app name.");
+    appdir.contains("debug")
 }

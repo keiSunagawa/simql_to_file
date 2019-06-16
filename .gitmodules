@@ -1,3 +1,6 @@
 [submodule "simqlToCsv"]
 	path = simqlToCsv
 	url = git@github.com:keiSunagawa/simqlToCsv.git
+[submodule "scala/SIMQL"]
+	path = scala/SIMQL
+	url = git@github.com:keiSunagawa/SIMQL.git
