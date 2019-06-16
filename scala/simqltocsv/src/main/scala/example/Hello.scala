@@ -19,8 +19,13 @@ class Application(m: Impure) {
     while(true) {
       val query = scala.io.StdIn.readLine()
       val sql = Module.simqlToMysql(query, Some(pd), Some(ud))
-      val rs = submitSQL(sql.right.get)
-      printResult(rs)
+      sql match {
+        case Right(q) =>
+          val rs = submitSQL(sql.right.get)
+          printResult(rs)
+        case Left(e) =>
+          println(s"parse faild: $e")
+      }
     }
     close()
   }
@@ -40,7 +45,7 @@ object ImpureSpark extends Impure {
   import org.apache.spark.sql.{SparkSession, DataFrame }
   import org.apache.log4j.{Logger, Level}
 
-  type H2Res = DataFrame
+  type H2Res = Option[DataFrame]
   val spark = SparkSession.builder.master("local[2]").getOrCreate()
 
   def loadPredef(): String = "define {}"
@@ -54,10 +59,13 @@ object ImpureSpark extends Impure {
     |}
     """.stripMargin
   def submitSQL(sql: String): H2Res = {
-    spark.sql(sql)
+    scala.util.Try { spark.sql(sql) }.toOption
   }
   def printResult(rs: H2Res): Unit = {
-    rs.show()
+    rs match {
+      case Some(ds) => ds.show()
+      case None => println("invalid SQL.")
+    }
   }
   def close(): Unit = {
     spark.stop()
