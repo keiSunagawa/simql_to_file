@@ -1,0 +1,8 @@
+[package]
+name = "simql_to_file"
+version = "0.1.0"
+authors = ["keiSunagawa <kei.sunagawa@mvrck.co.jp>"]
+edition = "2018"
+
+[dependencies]
+i-face = { git = "https://github.com/keiSunagawa/i-face", branch = "master" }
